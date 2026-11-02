@@ -1,0 +1,32 @@
+{
+  "name": "m295_demo",
+  "version": "1.0.0",
+  "description": "Test Doku",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nvondru/M295_Demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/nvondru/M295_Demo/issues"
+  },
+  "homepage": "https://github.com/nvondru/M295_Demo#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
