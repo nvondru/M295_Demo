@@ -1,25 +1,37 @@
-const firstName = "Nicolas";
-const names = ["Nicolas", "Dario", "Noam"];
-let newName = getName();
+import {getName, printName, printAllNames} from "./namePrinter.js";
+import irgendwas from "./math.js";
 
-
-function printName(name){
+function test(name, myCallback){
     console.log(name);
+    myCallback("Douglas");
 }
 
-function getName(){
-    return "New Name";
-}
-
-function printAllNames(){
-    names.forEach(name => {
-        printName(name);
-    })
-}
+test("Nicolas", (otherName) => {
+    console.log("Callback: " + otherName);
+});
 
 
-printName(firstName);
-printName(newName);
-printAllNames();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
