@@ -1,49 +1,11 @@
-import {getName, printName, printAllNames} from "./namePrinter.js";
-import irgendwas from "./math.js";
+import express from 'express'
 
-async function main() {
-    console.log("Loading data...")
-    try {
-        const data = await loadData();
-        console.log("Data loaded!")
-        console.log("Data: " + data);
-    }catch (error){
-        console.log(error);
-    }
-}
+const app = express()
 
-function loadData() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            let success = Math.random() > 0.5;
-            if (success){
-                resolve(['Anna', 'Ben', 'Carla'])
-            }else{
-                reject("An error occurred while loading data");
-            }
-        }, 1500)
-    })
-}
+app.get('/', (req, res) => {
+    res.send('Hallo Welt')
+})
 
-main();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.listen(3000, () => {
+    console.log('Server läuft auf http://localhost:3000')
+})
