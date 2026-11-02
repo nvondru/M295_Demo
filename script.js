@@ -1,10 +1,7 @@
 const firstName = "Nicolas";
 const names = ["Nicolas", "Dario", "Noam"];
+let newName = getName();
 
-let person = {
-    name: "Max",
-    age: 22
-}
 
 function printName(name){
     console.log(name);
@@ -21,10 +18,8 @@ function printAllNames(){
 }
 
 
-let newName = getName();
 printName(firstName);
 printName(newName);
 printAllNames();
 
-printName(person.name);
 
