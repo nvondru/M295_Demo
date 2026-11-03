@@ -1,6 +1,9 @@
+import 'dotenv/config'
 import express from 'express'
 
 const app = express()
+
+console.log(process.env.DB_PATH)
 
 app.get('/', (req, res) => {
     res.send('Hallo Welt')
