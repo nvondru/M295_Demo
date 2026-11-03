@@ -1,10 +1,12 @@
 import { Router } from "express";
+import {db} from "../db.js"
 
 const router = Router();
 
 // Get Handler
 router.get("/", (req, res) => {
-  res.send("Alle Benutzer");
+  const users = db.prepare('SELECT id, username FROM users').all()
+  res.json(users)
 });
 
 // Post Handler

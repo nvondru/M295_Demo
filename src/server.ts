@@ -1,5 +1,7 @@
+import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
 import usersRouter from "./routes/users.js";
+import './db.js'
 
 const app = express();
 
