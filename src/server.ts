@@ -3,9 +3,11 @@ import express, { Request, Response, NextFunction } from 'express'
 import usersRouter from "./routes/users.js";
 import './db.js'
 import {HttpError} from "./errors.js";
+import {logger} from "./logger.js";
 
 const app = express();
 
+app.use(logger)
 app.use(express.json());
 app.use(express.static("public"));
 
