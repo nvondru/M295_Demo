@@ -6,6 +6,7 @@ import {HttpError} from "./errors.js";
 import {logger} from "./logger.js";
 import cors from 'cors';
 import helmet from 'helmet';
+import {upload} from "./upload.js";
 
 
 const app = express();
@@ -22,6 +23,18 @@ app.use("/users", usersRouter);
 app.get("/suche", (req, res) => {
   res.send(`Suche nach: ${req.query.begriff}`);
 });
+
+// upload.single('datei') ist die Middleware VOR dem Handler
+app.post('/upload', upload.single('datei'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ fehler: 'Keine Datei erhalten' })
+  }
+  res.json({
+    nachricht: 'Upload ok',
+    name: req.file.originalname,
+    groesse: req.file.size
+  })
+})
 
 // Wenn keine andere Route zutrifft
 app.use((req, res) => {
