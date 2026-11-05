@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
 import usersRouter from "./routes/users.js";
 import './db.js'
+import {HttpError} from "./errors.js";
 
 const app = express();
 
@@ -22,7 +23,10 @@ app.use((req, res) => {
 
 // Wenn in einer Route ein unbehandelter Fehler auftritt
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err)
+  if (err instanceof HttpError) {
+    return res.status(err.statusCode).json({ fehler: err.message })
+  }
+  console.error(err) // unbekannter Fehler → ins Log
   res.status(500).json({ fehler: 'Interner Serverfehler' })
 })
 

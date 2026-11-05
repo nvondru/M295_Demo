@@ -1,5 +1,6 @@
 import { Router } from "express";
-import {db} from "../db.js"
+import { createUserSchema } from '../schemas/user.schema.js'
+import { HttpError } from '../errors.js'
 
 const router = Router();
 
@@ -20,17 +21,23 @@ router.get('/:id', (req, res) => {
   const user = users.find((u) => u.id === id)
 
   if (!user) {
-    return res.status(404).json({ fehler: 'Benutzer nicht gefunden' })
+    throw new HttpError(404, 'Benutzer nicht gefunden')
   }
   res.json(user)
 })
 
 // Neuen Benutzer erstellen
 router.post('/', (req, res) => {
-  const { username } = req.body
-  if (!username) {
-    return res.status(400).json({ fehler: 'username fehlt' })
+  const result = createUserSchema.safeParse(req.body)
+
+  if (!result.success) {
+    return res.status(400).json({
+      error: 'Validierung fehlgeschlagen',
+      fields: result.error.flatten().fieldErrors,
+    })
   }
+
+  const { username, password } = result.data;
 
   const neu = { id: users.length + 1, username }
   users.push(neu)
