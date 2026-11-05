@@ -4,10 +4,15 @@ import usersRouter from "./routes/users.js";
 import './db.js'
 import {HttpError} from "./errors.js";
 import {logger} from "./logger.js";
+import cors from 'cors';
+import helmet from 'helmet';
+
 
 const app = express();
 
 app.use(logger)
+app.use(helmet())
+app.use(cors())
 app.use(express.json());
 app.use(express.static("public"));
 
