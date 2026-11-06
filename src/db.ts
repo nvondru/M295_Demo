@@ -6,9 +6,30 @@ export const db = new Database(process.env.DB_PATH)
 // Tabelle anlegen, falls sie noch nicht existiert
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    username    TEXT NOT NULL UNIQUE,
+    password    TEXT NOT NULL
+  )
+`)
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS subjects (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    title       TEXT NOT NULL UNIQUE,
+    imagePath   TEXT NOT NULL,
+    description TEXT NOT NULL
+  )
+`)
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS grades (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    value       TEXT NOT NULL,
+    subjectId   INTEGER NOT NULL,
+    userId      INTEGER NOT NULL,
+    UNIQUE      (subjectId, userId),
+    FOREIGN KEY (subjectId) REFERENCES subjects(id),
+    FOREIGN KEY (userId) REFERENCES users(id)    
   )
 `)
 
