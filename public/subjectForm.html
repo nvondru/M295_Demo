@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fach erstellen</title>
+  </head>
+  <body>
+    <h1>Fach erstellen</h1>
+    <!-- enctype="multipart/form-data" ist nötig, damit die Datei mitgeschickt wird -->
+    <form action="/subjects" method="POST" enctype="multipart/form-data">
+      <p><input name="title" placeholder="Titel" /></p>
+      <p><textarea name="description" placeholder="Beschreibung"></textarea></p>
+      <p><input type="file" name="image" accept="image/png, image/jpeg" /></p>
+      <button type="submit">Speichern</button>
+    </form>
+  </body>
+</html>

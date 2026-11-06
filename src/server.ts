@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
 import usersRouter from "./routes/users.js";
+import subjectsRouter from "./routes/subjects.js";
 import './db.js'
 import {HttpError} from "./errors.js";
 import {logger} from "./logger.js";
@@ -38,6 +39,7 @@ app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
 app.use("/users", usersRouter);
+app.use("/subjects", subjectsRouter);
 
 // Query Parameter
 app.get("/suche", (req, res) => {
