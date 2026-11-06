@@ -7,9 +7,24 @@ import {logger} from "./logger.js";
 import cors from 'cors';
 import helmet from 'helmet';
 import {upload} from "./upload.js";
+import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
+
+const swaggerSpec = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    info: { title: 'meine-api', version: '1.0.0' },
+    servers: [{ url: 'http://localhost:3000' }],
+  },
+  // wo Swagger nach Kommentaren sucht:
+  apis: ['./src/**/*.ts'],
+})
 
 
 const app = express();
+
+// Doku unter /api-docs anzeigen
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use(logger)
 app.use(helmet())

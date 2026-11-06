@@ -10,12 +10,36 @@ const users = [
   { id: 2, username: 'Anna' },
 ]
 
-// Alle Benutzer lesen
+/**
+ * @openapi
+ * /users:
+ *   get:
+ *     summary: Gibt alle Benutzer zurück
+ *     responses:
+ *       200:
+ *         description: Liste der Benutzer
+ */
 router.get('/', (req, res) => {
   res.json(users) // Statuscode 200 ist Standard
 })
 
-// Einen Benutzer anhand der ID lesen
+/**
+ * @openapi
+ * /users/{id}:
+ *   get:
+ *     summary: Gibt einen Benutzer anhand der ID zurück
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Benutzer gefunden
+ *       404:
+ *         description: Benutzer nicht gefunden
+ */
 router.get('/:id', (req, res) => {
   const id = Number(req.params.id)
   const user = users.find((u) => u.id === id)
