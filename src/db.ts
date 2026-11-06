@@ -3,6 +3,9 @@ import Database from 'better-sqlite3'
 // Öffnet die Datei daten.sqlite (wird beim ersten Mal erstellt)
 export const db = new Database(process.env.DB_PATH)
 
+// SQLite prüft Fremdschlüssel nur, wenn man es pro Verbindung einschaltet
+db.pragma('foreign_keys = ON')
+
 // Tabelle anlegen, falls sie noch nicht existiert
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
@@ -24,12 +27,13 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS grades (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    value       TEXT NOT NULL,
+    value       REAL NOT NULL,
     subjectId   INTEGER NOT NULL,
     userId      INTEGER NOT NULL,
     UNIQUE      (subjectId, userId),
-    FOREIGN KEY (subjectId) REFERENCES subjects(id),
-    FOREIGN KEY (userId) REFERENCES users(id)    
+    -- ON DELETE CASCADE: wird ein Fach oder User gelöscht, verschwinden seine Noten mit
+    FOREIGN KEY (subjectId) REFERENCES subjects(id) ON DELETE CASCADE,
+    FOREIGN KEY (userId)    REFERENCES users(id)    ON DELETE CASCADE
   )
 `)
 
