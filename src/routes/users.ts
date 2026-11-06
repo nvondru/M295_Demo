@@ -1,14 +1,7 @@
 import { Router } from "express";
-import { createUserSchema } from '../schemas/user.schema.js'
-import { HttpError } from '../errors.js'
+import * as userController from "../controllers/user.controller.js";
 
 const router = Router();
-
-// Testdaten (später aus der Datenbank)
-const users = [
-  { id: 1, username: 'Admin' },
-  { id: 2, username: 'Anna' },
-]
 
 /**
  * @openapi
@@ -19,9 +12,7 @@ const users = [
  *       200:
  *         description: Liste der Benutzer
  */
-router.get('/', (req, res) => {
-  res.json(users) // Statuscode 200 ist Standard
-})
+router.get("/", userController.getUsers);
 
 /**
  * @openapi
@@ -37,53 +28,86 @@ router.get('/', (req, res) => {
  *     responses:
  *       200:
  *         description: Benutzer gefunden
+ *       400:
+ *         description: Ungültige ID
  *       404:
  *         description: Benutzer nicht gefunden
  */
-router.get('/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const user = users.find((u) => u.id === id)
+router.get("/:id", userController.getUser);
 
-  if (!user) {
-    throw new HttpError(404, 'Benutzer nicht gefunden')
-  }
-  res.json(user)
-})
+/**
+ * @openapi
+ * /users:
+ *   post:
+ *     summary: Erstellt einen neuen Benutzer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username: { type: string }
+ *               password: { type: string }
+ *     responses:
+ *       201:
+ *         description: Benutzer erstellt
+ *       400:
+ *         description: Validierung fehlgeschlagen
+ *       409:
+ *         description: Benutzername schon vergeben
+ */
+router.post("/", userController.createUser);
 
-// Neuen Benutzer erstellen
-router.post('/', (req, res) => {
-  const result = createUserSchema.safeParse(req.body)
+/**
+ * @openapi
+ * /users/{id}:
+ *   put:
+ *     summary: Ändert einen Benutzer
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username: { type: string }
+ *               password: { type: string }
+ *     responses:
+ *       200:
+ *         description: Benutzer geändert
+ *       400:
+ *         description: Validierung fehlgeschlagen
+ *       404:
+ *         description: Benutzer nicht gefunden
+ *       409:
+ *         description: Benutzername schon vergeben
+ */
+router.put("/:id", userController.updateUser);
 
-  if (!result.success) {
-    return res.status(400).json({
-      error: 'Validierung fehlgeschlagen',
-      fields: result.error.flatten().fieldErrors,
-    })
-  }
+/**
+ * @openapi
+ * /users/{id}:
+ *   delete:
+ *     summary: Löscht einen Benutzer und seine Noten
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Benutzer gelöscht
+ *       404:
+ *         description: Benutzer nicht gefunden
+ */
+router.delete("/:id", userController.deleteUser);
 
-  const { username, password } = result.data;
-
-  const neu = { id: users.length + 1, username }
-  users.push(neu)
-  res.status(201).json(neu) // 201 = Created
-})
-
-// Benutzer löschen
-router.delete('/:id', (req, res) => {
-  const id = Number(req.params.id)
-
-  if (!id) {
-    return res.status(400).json({ fehler: 'ungültige id' })
-  }
-
-  const index = users.findIndex(u => u.id === id)
-
-  if (index === -1) {
-    return res.status(404).json({ fehler: 'user nicht gefunden' })
-  }
-
-  users.splice(index, 1) // removes exactly 1 element at that position
-
-  res.status(204).end() // 204 = No Content -> geeignet bei DELETE
-})
 export default router;
