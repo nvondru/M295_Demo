@@ -1,0 +1,1003 @@
+{
+  "info": {
+    "name": "M295 Demo API",
+    "description": "Alle Requests der M295 Demo API (Users, Subjects, Grades).\n\nDie \"erstellen\"-Requests speichern die neue ID automatisch in `userId`, `subjectId` und `gradeId`. Darum am besten von oben nach unten ausführen.\n\nBei den Requests mit Bild-Upload muss im Body beim Feld `image` zuerst eine Datei ausgewählt werden.\n\nDer Ordner \"Aufräumen\" löscht alles wieder, darum steht er am Schluss.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 Users",
+      "description": "CRUD für Benutzer: /users",
+      "item": [
+        {
+          "name": "Alle Benutzer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Gibt alle Benutzer zurück (ohne Passwort)."
+          }
+        },
+        {
+          "name": "Benutzer erstellen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"userId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Erstellt einen Benutzer. Die neue ID wird in der Variable `userId` gespeichert.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Anna\",\n  \"password\": \"geheim\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Benutzer anzeigen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Gibt den Benutzer mit der ID `userId` zurück."
+          }
+        },
+        {
+          "name": "Benutzer ändern",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Ändert Benutzername und Passwort.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Anna Muster\",\n  \"password\": \"neuesPasswort\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 Subjects",
+      "description": "CRUD für Fächer mit Bild-Upload: /subjects",
+      "item": [
+        {
+          "name": "Alle Fächer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects"
+              ]
+            },
+            "description": "Gibt alle Fächer zurück."
+          }
+        },
+        {
+          "name": "Fach erstellen (mit Bild)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"subjectId\", pm.response.json().id);",
+                  "if (pm.response.code === 201) console.log(\"Bild ansehen: \" + pm.collectionVariables.get(\"baseUrl\") + \"/uploads/\" + pm.response.json().imagePath);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects"
+              ]
+            },
+            "description": "Erstellt ein Fach als `multipart/form-data`.\n\n**Vor dem Senden:** beim Feld `image` eine Bilddatei auswählen.\n\nDie neue ID wird in `subjectId` gespeichert.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Mathematik",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Algebra und Geometrie",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Bild (PNG/JPG, max. 2 MB) hier auswählen"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fach anzeigen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Gibt das Fach zurück. Das Bild ist im Browser unter `{{baseUrl}}/uploads/<imagePath>` sichtbar."
+          }
+        },
+        {
+          "name": "Fach ändern (ohne neues Bild)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Ändert Titel und Beschreibung. Ohne Datei bleibt das alte Bild.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Mathematik 2",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Analysis",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fach ändern (mit neuem Bild)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Ersetzt auch das Bild. Das alte Bild wird im Ordner `uploads/` gelöscht.\n\n**Vor dem Senden:** beim Feld `image` eine Bilddatei auswählen.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Mathematik 2",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Analysis",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Bild (PNG/JPG, max. 2 MB) hier auswählen"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 Grades",
+      "description": "CRUD für Noten eines Benutzers: /users/:userId/grades",
+      "item": [
+        {
+          "name": "Alle Noten eines Benutzers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "Gibt alle Noten des Benutzers `userId` zurück."
+          }
+        },
+        {
+          "name": "Note erstellen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"gradeId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "Erstellt eine Note für den Benutzer `userId` im Fach `subjectId`. Die neue ID wird in `gradeId` gespeichert.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 5,\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Note anzeigen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades/{{gradeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades",
+                "{{gradeId}}"
+              ]
+            },
+            "description": "Gibt eine Note zurück."
+          }
+        },
+        {
+          "name": "Note ändern",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades/{{gradeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades",
+                "{{gradeId}}"
+              ]
+            },
+            "description": "Ändert den Wert der Note.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 5.5,\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 Fehlerfälle",
+      "description": "Zeigt die Statuscodes 400, 404 und 409.",
+      "item": [
+        {
+          "name": "400 – Ungültige ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "abc"
+              ]
+            },
+            "description": "`abc` ist keine Zahl → 400."
+          }
+        },
+        {
+          "name": "404 – Benutzer gibt es nicht",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "99999"
+              ]
+            },
+            "description": "Diese ID existiert nicht → 404."
+          }
+        },
+        {
+          "name": "400 – Benutzer ungültig",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Leerer Benutzername und zu kurzes Passwort → 400 mit Fehlern pro Feld.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"\",\n  \"password\": \"12\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "409 – Benutzername vergeben",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "`Admin` gibt es schon → 409.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Admin\",\n  \"password\": \"geheim\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "400 – Fach ohne Bild",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects"
+              ]
+            },
+            "description": "Ohne Datei im Feld `image` → 400 (`Bild fehlt`).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Englisch",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Ohne Bild",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 – Note zu hoch",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "Note 7 ist grösser als 6 → 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 7,\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "400 – Note ist keine Zahl",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "`\"sechs\"` ist keine Zahl → 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"sechs\",\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "404 – Fach gibt es nicht",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "Fach 99999 existiert nicht → 404.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 4,\n  \"subjectId\": 99999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "409 – Note für Fach existiert schon",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades"
+              ]
+            },
+            "description": "Der Benutzer hat für dieses Fach schon eine Note → 409. (Zuerst \"Note erstellen\" ausführen.)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": 4,\n  \"subjectId\": {{subjectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 Aufräumen",
+      "description": "Löscht Note, Fach und Benutzer wieder.",
+      "item": [
+        {
+          "name": "Note löschen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/grades/{{gradeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "grades",
+                "{{gradeId}}"
+              ]
+            },
+            "description": "Löscht die Note."
+          }
+        },
+        {
+          "name": "Fach löschen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subjects/{{subjectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subjects",
+                "{{subjectId}}"
+              ]
+            },
+            "description": "Löscht das Fach, sein Bild und alle Noten in diesem Fach (ON DELETE CASCADE)."
+          }
+        },
+        {
+          "name": "Benutzer löschen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Löscht den Benutzer und alle seine Noten (ON DELETE CASCADE)."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "subjectId",
+      "value": "1"
+    },
+    {
+      "key": "gradeId",
+      "value": "1"
+    }
+  ]
+}
